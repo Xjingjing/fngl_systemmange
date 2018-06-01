@@ -148,7 +148,7 @@
     import VueJsonp from 'vue-jsonp';
     import { Toast } from 'mint-ui';
     export default {
-        name:'adduserup',
+        name:'changeuserup',
         data(){
             var self = this;
             return{

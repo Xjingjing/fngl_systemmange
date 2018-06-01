@@ -109,10 +109,15 @@
                     }
                 }).then(function(res){
                     console.log(res)
-                    that.error = res.data.message;   
-                    that.$router.push({
-                        path:'/userup'
-                    })             
+                    if(res.data.code == 0){
+                        window.localStorage.setItem('userpower','1');
+                        window.localStorage.setItem('pusherId',res.data.data.pusherInfo.pusherId);
+                        that.$router.push({
+                            path:'/index'
+                        }) 
+                    }else{
+                        that.error = res.data.message;  
+                    }            
                 })
             }
         }

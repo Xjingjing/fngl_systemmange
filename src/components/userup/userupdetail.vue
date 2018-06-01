@@ -56,7 +56,7 @@
     import { MessageBox } from 'mint-ui';
     import { Toast } from 'mint-ui';
     export default {
-        name: 'memberlist',
+        name: 'userupdetail',
         data(){
             return {
                 searchvalue:'',
@@ -85,7 +85,7 @@
                 return
             }
 
-            that.getalldetail();
+            this.getalldetail();
         },
         methods:{
             getalldetail(){

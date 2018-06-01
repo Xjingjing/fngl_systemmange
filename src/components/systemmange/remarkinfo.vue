@@ -28,7 +28,7 @@
 <script>
     import { MessageBox } from 'mint-ui';
     export default {
-        name: 'datamange',
+        name: 'remarkinfo',
         data(){
             return {
                 isshow:true,

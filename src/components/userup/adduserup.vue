@@ -395,11 +395,8 @@
     .mint-msgbox-content{
         padding:0;
     }
-    .mint-field-core{
-        font-size:0.8rem !important;
-    }
     .mint-field .mint-cell-title{
-        font-size:0.8rem;
+        font-size:1rem;
     }
     .managecatelist .mint-msgbox-content{
         padding-left:2.7rem;

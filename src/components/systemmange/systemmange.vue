@@ -1,92 +1,99 @@
 <template>
-    <div>
-        <div>
-            <mt-header fixed title="系统管理">
-                <!-- <span slot="left" @click="$router.go(-1)">
-                    <mt-button icon="back"></mt-button>
-                </span> -->
-            </mt-header>
-            <div class="catelist">
-                <button class="mint-button mint-button--primary mint-button--large is-plain" @click="togroup">
-                    <label class="mint-button-text">分组列表</label>
-                </button>
-                <button class="mint-button mint-button--primary mint-button--large is-plain" @click="tomember">
-                    <label class="mint-button-text">成员列表</label>
-                </button>
-                <button class="mint-button mint-button--primary mint-button--large is-plain" @click="todata">
-                    <label class="mint-button-text">数据统计</label>
-                </button>
-            </div>
-            <!-- <mt-navbar v-model="selected">
-                <mt-tab-item id="1">分组列表</mt-tab-item>
-                <mt-tab-item id="2">成员列表</mt-tab-item>
-                <mt-tab-item id="3">数据统计</mt-tab-item>
-            </mt-navbar>
-            <mt-tab-container v-model="selected">
-                <mt-tab-container-item id="1">
-                    分组列表
-                </mt-tab-container-item>
-                <mt-tab-container-item id="2">
-                    成员列表
-                </mt-tab-container-item>
-                <mt-tab-container-item id="3">
-                    数据统计
-                </mt-tab-container-item>
-            </mt-tab-container> -->
-        </div>
-    </div>
+    
 </template>
 
 <script>
-import { MessageBox } from 'mint-ui';
-    export default {
-        name: 'App',
+export default {
+        name: 'systemmange',
         data(){
             return {
-                isshow:true,
+                
             }
         },
         created(){
-
-            // this.$getcode();
-            var that = this;
-           
-        },
-        methods:{
-
-            togroup(){
-                this.$router.push({path:'/grouplist'});
-            },
-            tomember(){
-                this.$router.push({path:'/memberlist'})
-            },
-            todata(){
-                this.$router.push({path:'/datamange'})
+            console.log('aaa')
+            var that =this;
+            var newappid = 'wxc179ff8c019bd102';
+            var redirect_url = encodeURIComponent('http://wxadmin.efunong.com/systemmange');
+            var code = window.location.search.substr(1).split('&')[0].split('=')[1];
+            console.log(code)
+            if(!code){
+                if(window.localStorage.getItem('openid') == null || window.localStorage.getItem('openid') == 'null' || window.localStorage.getItem('openid') == ''){
+                    console.log(222)
+                    var state = Date.parse(new Date);
+                    var url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+newappid+"&redirect_uri="+redirect_url+"&response_type=code&scope=snsapi_base&state="+state+"#wechat_redirect";
+                    window.location.href = url; 
+                    // that.$router.push({
+                    //     path:'/index1'
+                    // })
+                }else{
+                    this.$axios({
+                        method:'post',
+                        url:'/index.php?g=landpush&m=landpush&a=loginCode',
+                        data:{
+                            openid:window.localStorage.getItem('openid'),
+                            action_type:1
+                        },
+                        headers:{
+                            'Content-Type':'application/x-www-form-urlencoded'
+                        }
+                    }).then(function(res){
+                        console.log(res)
+                        if(res.data.code == 0){
+                            window.localStorage.setItem('openid',res.data.data.pusherInfo.openid);
+                            window.localStorage.setItem('pusherId',res.data.data.pusherInfo.pusherId);
+                            window.localStorage.setItem('syspower','true');
+                            window.localStorage.setItem('sysisshow',1);
+                            that.$router.push({
+                                path:'/index1'
+                            })
+                        }else{
+                            window.localStorage.setItem('syspower','false');
+                            window.localStorage.setItem('openid',res.data.data.pusherInfo.openid);
+                            that.$router.push({path:'/power'}) 
+                        }
+                    })
+                    console.log(234)
+                    // console.log('aaa')
+                    
             }
+        }else{
+            this.$axios({
+                        method:'post',
+                        url:'/index.php?g=landpush&m=landpush&a=loginCode',
+                        data:{
+                            code:code,
+                            action_type:1
+                        },
+                        headers:{
+                            'Content-Type':'application/x-www-form-urlencoded'
+                        }
+                    }).then(function(res){
+                        console.log(res)
+                        if(res.data.code == 0){
+                                window.localStorage.setItem('openid',res.data.data.pusherInfo.openid);
+                                window.localStorage.setItem('pusherId',res.data.data.pusherInfo.pusherId);
+                                window.localStorage.setItem('syspower','true');
+                                that.$router.push({
+                                    path:'/index1'
+                                })
+                        }else{
+                            window.localStorage.setItem('syspower','false');
+                            window.localStorage.setItem('openid',res.data.data.pusherInfo.openid);
+                            that.$router.push({
+                                path:'/power'
+                            });  
+                        }
+                })
         }
-    }
-    
+        },
+}
 </script>
 
 <style scoped>
-    /* .mint-navbar{
-        margin-top:40px;
-    }
-    .mint-tab-container{
-        margin-top:2px;
-    } */
 
-    .catelist{
-        margin-top:15%;
-    }
-    .catelist button{
-        margin-bottom:10%;
-    }
-    .mint-button{
-        margin:auto;
-        width:75%;
-        height:66px;
-        border-radius: 0.7rem;
-        font-size:1.2rem;
-    }
 </style>
+
+
+
+

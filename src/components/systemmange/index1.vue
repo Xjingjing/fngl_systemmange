@@ -1,55 +1,92 @@
 <template>
-    
+    <div>
+        <div>
+            <mt-header fixed title="系统管理">
+                <!-- <span slot="left" @click="$router.go(-1)">
+                    <mt-button icon="back"></mt-button>
+                </span> -->
+            </mt-header>
+            <div class="catelist">
+                <button class="mint-button mint-button--primary mint-button--large is-plain" @click="togroup">
+                    <label class="mint-button-text">分组列表</label>
+                </button>
+                <button class="mint-button mint-button--primary mint-button--large is-plain" @click="tomember">
+                    <label class="mint-button-text">成员列表</label>
+                </button>
+                <button class="mint-button mint-button--primary mint-button--large is-plain" @click="todata">
+                    <label class="mint-button-text">数据统计</label>
+                </button>
+            </div>
+            <!-- <mt-navbar v-model="selected">
+                <mt-tab-item id="1">分组列表</mt-tab-item>
+                <mt-tab-item id="2">成员列表</mt-tab-item>
+                <mt-tab-item id="3">数据统计</mt-tab-item>
+            </mt-navbar>
+            <mt-tab-container v-model="selected">
+                <mt-tab-container-item id="1">
+                    分组列表
+                </mt-tab-container-item>
+                <mt-tab-container-item id="2">
+                    成员列表
+                </mt-tab-container-item>
+                <mt-tab-container-item id="3">
+                    数据统计
+                </mt-tab-container-item>
+            </mt-tab-container> -->
+        </div>
+    </div>
 </template>
 
 <script>
-export default {
-        name: 'index',
+import { MessageBox } from 'mint-ui';
+    export default {
+        name: 'index1',
         data(){
             return {
-                
+                isshow:true,
             }
         },
         created(){
-            var that =this;
-            var code = window.location.search.substr(1).split('&')[0].split('=')[1];
-            if(!code){
-                that.$router.push({
-                    path:'/systemmange'
-                })
-            }else{
-                this.$axios({
-                    method:'post',
-                    url:'/index.php?g=landpush&m=landpush&a=loginCode',
-                    data:{
-                        code:code,
-                        action_type:1
-                    },
-                    headers:{
-                        'Content-Type':'application/x-www-form-urlencoded'
-                    }
-                }).then(function(res){
-                    console.log(res)
-                    if(res.data.code == 0){
-                            window.localStorage.setItem('openid',res.data.data.pusherInfo.openid);
-                            window.localStorage.setItem('pusherId',res.data.data.pusherInfo.pusherId);
-                            window.localStorage.setItem('syspower','true');
-                            that.$router.push({
-                                path:'/systemmange'
-                            })
-                    }else{
-                        window.localStorage.setItem('syspower','false');
-                        window.localStorage.setItem('openid',res.data.data.pusherInfo.openid);
-                        that.$router.push({
-                            path:'/power'
-                        });  
-                    }
-                })
-            }
+
+            // this.$getcode();
+            var that = this;
+           
         },
-}
+        methods:{
+
+            togroup(){
+                this.$router.push({path:'/grouplist'});
+            },
+            tomember(){
+                this.$router.push({path:'/memberlist'})
+            },
+            todata(){
+                this.$router.push({path:'/datamange'})
+            }
+        }
+    }
+    
 </script>
 
 <style scoped>
+    /* .mint-navbar{
+        margin-top:40px;
+    }
+    .mint-tab-container{
+        margin-top:2px;
+    } */
 
+    .catelist{
+        margin-top:15%;
+    }
+    .catelist button{
+        margin-bottom:10%;
+    }
+    .mint-button{
+        margin:auto;
+        width:75%;
+        height:66px;
+        border-radius: 0.7rem;
+        font-size:1.2rem;
+    }
 </style>

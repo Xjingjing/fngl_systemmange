@@ -2,7 +2,7 @@
      <div>
             <!--顶部  -->
             <mt-header fixed title="成员列表">
-                <span slot="left" @click="$router.push({path:'/systemmange'})">
+                <span slot="left" @click="$router.push({path:'/index1'})">
                     <mt-button icon="back"></mt-button>
                 </span>
                 <mt-button slot="right" v-if="isselectall == false" @click="selectall">全选</mt-button>

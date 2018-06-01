@@ -25,7 +25,7 @@
     import { MessageBox } from 'mint-ui';
     import { Toast } from 'mint-ui';
     export default {
-        name: 'datamange',
+        name: 'addremark',
         data(){
             return {
                 isshow:true,

@@ -45,7 +45,7 @@
     import { MessageBox } from 'mint-ui';
     import { Toast } from 'mint-ui';
     export default {
-        name: 'memberlist',
+        name: 'sharedetail',
         data(){
             return {
                 searchvalue:'',

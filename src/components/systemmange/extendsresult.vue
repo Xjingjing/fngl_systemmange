@@ -24,7 +24,7 @@
     import { MessageBox } from 'mint-ui';
     import { Checklist } from 'mint-ui';
     export default {
-        name: 'datamange',
+        name: 'extendsresult',
         data(){
             return {
                 isshow:true,

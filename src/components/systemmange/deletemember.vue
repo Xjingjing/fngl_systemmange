@@ -27,7 +27,7 @@
     import MobileSelect from 'mobile-select'
     import { Toast } from 'mint-ui';
     export default {
-        name: 'datamange',
+        name: 'deletemember',
         data(){
             return {
                 isshow:true,
