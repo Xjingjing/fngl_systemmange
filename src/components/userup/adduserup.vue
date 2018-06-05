@@ -110,7 +110,7 @@
                 </div> 
                 <div class="mint-cell-value">
                     <input onfocus="this.blur()" class="mint-field-core" v-model="areapre" id="demo1"  type="text" name="input_area" placeholder="点击选择地址"/> 
-                    <!-- <button class="areabutton" @click="getareadetail">定位</button> -->
+                    <button class="areabutton" @click="getareadetail">定位</button>
                 </div>
             </div> 
             <div class="mint-cell-right"></div>
@@ -180,22 +180,6 @@
                 
                 lng: 0,
                 lat: 0,
-                
-                plugin: [{
-                    pName: 'Geolocation',
-                    events: {
-                    init(o) {
-                        // o 是高德地图定位插件实例
-                        o.getCurrentPosition((status, result) => {
-                        if (result && result.position) {
-                            self.lng = result.position.lng;
-                            self.lat = result.position.lat;
-                            console.log(self.lng)
-                        }
-                        });
-                    }
-                    }
-                }]
             }
         },
         created(){
@@ -283,16 +267,20 @@
         },
         methods:{
             getareadetail(){
-                var self = this;
-                var url = 'http://api.map.baidu.com/geocoder/v2/?callback=renderReverse&location='+self.lat+','+self.lng+'&output=json&pois=1&ak=Oqjw5Gqfw8GdeOh2uzG7jMLCS9WRsC2j'
-                self.$jsonp(url)
-                .then(function(res){
-                    console.log(self.lng)
-                    var data = res.result.addressComponent;
-                    self.areapre = data.province+','+data.city+','+data.district;
-                    self.areadetail = data.street+data.street_number;
-                    console.log(res.result.addressComponent)
-                })
+                var that = this; 
+                var geolocation = new BMap.Geolocation(); 
+                //调用百度地图api 中的获取当前位置接口
+                geolocation.getCurrentPosition(function(r){ if(this.getStatus() == BMAP_STATUS_SUCCESS){ 
+                    // alert(r.point.lng+'---'+r.point.lat);
+                    var myGeo = new BMap.Geocoder();
+                    myGeo.getLocation(new BMap.Point(r.point.lng, r.point.lat), function(result){ if (result){
+                        // console.log(result)
+                        that.areapre = result.addressComponents.province+','+result.addressComponents.city+','+result.addressComponents.district;
+                        that.areadetail = result.addressComponents.street+result.addressComponents.streetNumber;
+                        // console.log(that.areapre)
+                    }})
+                } });  
+                    
             },
 
             selectmanagecate(){
@@ -388,6 +376,7 @@
         border: 1px solid #ddd;
         color: #999;
         border-radius: 0.3rem;
+        padding: 0.2rem 0.5rem;
     }
     .areabutton:focus{
         outline:none;
