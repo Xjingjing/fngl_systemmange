@@ -1,5 +1,5 @@
 <template>
-     <div>
+     <div style="padding-bottom:14%;">
             <!-- 头部 -->
             <mt-header fixed title="小组详情">
                 <span slot="left" @click="$router.push({path:'/grouplist'})">

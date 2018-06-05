@@ -38,12 +38,12 @@
         created(){
             var power = window.localStorage.getItem('syspower');
             // 判断有没有权限访问
-            if(power == 'false' || power == null){
-                this.$router.push({
-                    path:'/power'
-                })
-                return
-            }
+            // if(power == 'false' || power == null){
+            //     this.$router.push({
+            //         path:'/power'
+            //     })
+            //     return
+            // }
 
 
             var arr = [];

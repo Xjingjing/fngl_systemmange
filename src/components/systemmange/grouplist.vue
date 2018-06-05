@@ -1,5 +1,5 @@
 <template>
-     <div>
+     <div style="padding-bottom:14%;">
             <!--顶部  -->
             <mt-header fixed title="分组列表">
                 <span slot="left" @click="$router.push({path:'/index1'})">

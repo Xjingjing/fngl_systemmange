@@ -202,22 +202,22 @@
         created(){
             var power = window.localStorage.getItem('userpower');
             // 判断有没有权限访问
-            if(power == null){
-                this.$router.push({
-                    path:'/power'
-                })
-                return
-            }else if(power == '2'){
-                this.$router.push({
-                    path:'/bindphone'
-                })
-                return
-            }else if(power == '3'){
-                this.$router.push({
-                    path:'/power'
-                })
-                return
-            }
+            // if(power == null){
+            //     this.$router.push({
+            //         path:'/power'
+            //     })
+            //     return
+            // }else if(power == '2'){
+            //     this.$router.push({
+            //         path:'/bindphone'
+            //     })
+            //     return
+            // }else if(power == '3'){
+            //     this.$router.push({
+            //         path:'/power'
+            //     })
+            //     return
+            // }
 
             var that = this;
             this.$axios({
@@ -272,8 +272,8 @@
                 url:'/index.php?g=landpush&m=landpush&a=landuserSearch',
                 data:{
                     pusherId:Number(window.localStorage.getItem('pusherId')),
-                    actionType:2,
-                    currentSec:that.groupobj.day,
+                    actionType:1,
+                    // currentSec:that.groupobj.day,
                     search:that.groupobj.changephone
                 },
                 headers:{

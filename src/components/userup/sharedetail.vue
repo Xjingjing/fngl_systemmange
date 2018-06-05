@@ -116,7 +116,8 @@
                     data:{
                         actionType:2,
                         currentSec:that.groupobj.day,
-                        search:that.searchvalue
+                        search:that.searchvalue,
+                        pusherId:Number(window.localStorage.getItem('pusherId')),
                     },
                     headers:{
                         'Content-Type':'application/x-www-form-urlencoded'
@@ -217,7 +218,6 @@
         color:#555;
     }
     .meminfo{
-        float:left;
         box-sizing: border-box;
         -webkit-box-sizing: border-box;
     }
@@ -226,6 +226,7 @@
     }
     .meminfo:nth-child(3){
         width:50%;
+        margin-right:3rem;
     }
     .result li{
         width:30%;

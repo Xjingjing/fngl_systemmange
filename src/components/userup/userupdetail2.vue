@@ -8,13 +8,13 @@
             </mt-header>
 
             <!-- 搜索 -->
-            <div class="mint-searchbar">
+            <!-- <div class="mint-searchbar">
                 <div class="mint-searchbar-inner">
                     <i class="mintui mintui-search"></i> 
                     <input type="search" placeholder="请输入您想要搜索的姓名或手机号" class="mint-searchbar-core" v-model="searchvalue">
                 </div> 
                 <a class="mint-searchbar-cancel" @click="search">搜索</a>
-            </div>
+            </div> -->
 
             <!-- 上报详细信息 -->
             <div>
@@ -59,31 +59,30 @@
         name: 'userupdetail',
         data(){
             return {
-                searchvalue:'',
+                searchvalue:this.$route.query.searchvalue,
                 isshow:true,
-                groupobj:this.$route.query,  // 获取路由传值
                 reportdetaillist:[]
             }
         },
         created(){
             var power = window.localStorage.getItem('userpower');
             // 判断有没有权限访问
-            if(power == null){
-                this.$router.push({
-                    path:'/power'
-                })
-                return
-            }else if(power == '2'){
-                this.$router.push({
-                    path:'/bindphone'
-                })
-                return
-            }else if(power == '3'){
-                this.$router.push({
-                    path:'/power'
-                })
-                return
-            }
+            // if(power == null){
+            //     this.$router.push({
+            //         path:'/power'
+            //     })
+            //     return
+            // }else if(power == '2'){
+            //     this.$router.push({
+            //         path:'/bindphone'
+            //     })
+            //     return
+            // }else if(power == '3'){
+            //     this.$router.push({
+            //         path:'/power'
+            //     })
+            //     return
+            // }
 
             this.getalldetail();
         },
@@ -98,18 +97,18 @@
                     method:'post',
                     url:'/index.php?g=landpush&m=landpush&a=landuserSearch',
                     data:{
-                        actionType:3,
+                        actionType:1,
                         pusherId:Number(window.localStorage.getItem('pusherId')),
-                        currentSec:that.groupobj.day
+                        search:that.searchvalue
                     },
                     headers:{
                         'Content-Type':'application/x-www-form-urlencoded'
                     }
                 }).then(function(res){
                     that.$indicator.close();
-                    // console.log(res)
+                    console.log(res)
                     that.reportdetaillist = res.data.data;
-                    // console.log(that.reportdetaillist)
+                    
                 })
             },
             search(){
@@ -207,7 +206,7 @@
                     $('.reportcheck:checked').each(function(){
                         obj.changeid = $(this).val().split(',')[0];
                         obj.changephone = $(this).val().split(',')[1];
-                        obj.day = that.groupobj.day;
+                        // obj.day = that.groupobj.day;
                     })
                     this.$router.push({
                         path:'/changeuserup',

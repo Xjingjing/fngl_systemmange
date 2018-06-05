@@ -166,7 +166,8 @@
                     url:'/index.php?g=landpush&m=landpush&a=shareDetails',
                     data:{
                         actionType:1,
-                        search:that.searchvalue
+                        search:that.searchvalue,
+                        pusherId:Number(window.localStorage.getItem('pusherId')),
                     },
                     headers:{
                         'Content-Type':'application/x-www-form-urlencoded'
@@ -178,8 +179,10 @@
                         Toast('没有查询到匹配数据');
                         that.sharelist = [];
                     }else{
-                        that.count = res.data.data.count;
-                        that.sharelist = res.data.data.daysList;
+                        that.$router.push({
+                            path:'/sharedetail2',
+                            query:{searchvalue:that.searchvalue}
+                        })
                     }
                 })
             },
@@ -209,7 +212,7 @@
                 that.searchendtime = endTime.getTime()/1000;
                 var data = {
                         actionType:1,
-                        pusherId:20,
+                        pusherId:Number(window.localStorage.getItem('pusherId')),
                         days:that.searchdate,
                         endTime:endTime.getTime()/1000
                     }
@@ -247,7 +250,7 @@
                     data:{
                         actionType:1,
                         days:7,
-                        pusherId:20
+                        pusherId:Number(window.localStorage.getItem('pusherId'))
                     },
                     headers:{
                         'Content-Type':'application/x-www-form-urlencoded'

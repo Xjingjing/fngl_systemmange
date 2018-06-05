@@ -52,7 +52,6 @@
                 arr.push(this.$route.query[k])
             }
             this.value = arr;
-
             this.$indicator.open({
                 text: '加载中...',
                 spinnerType: 'fading-circle'

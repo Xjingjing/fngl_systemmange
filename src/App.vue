@@ -203,7 +203,7 @@ export default {
         z-index:99;
     }
     .checkbox-input:checked+.mint-checkbox-core {
-        background-color: #26a2ff;
+        background-color: #26a2ff !important;
         border-color: #26a2ff;
     }
     .checkbox-input:checked+.mint-checkbox-core:after {
@@ -272,8 +272,11 @@ export default {
         font-size:1rem !important;
     }
     .mint-checkbox-input[disabled] + .mint-checkbox-core{
+      background-color: #fff !important;
+    }
+    .mint-checkbox-input:checked + .mint-checkbox-core{
       background-color: #26a2ff !important;
-      border-color:#26a2ff;
+      border-color: #26a2ff !important;
     }
     .mint-indicator-wrapper{
       background: rgba(0, 0, 0, 0.5) !important;

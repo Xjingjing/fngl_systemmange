@@ -20,7 +20,9 @@ import deletemember from '@/components/systemmange/deletemember'
 import power from '@/components/systemmange/power'
 import datacount from '@/components/userup/datacount'
 import sharedetail from '@/components/userup/sharedetail'
+import sharedetail2 from '@/components/userup/sharedetail2'
 import userupdetail from '@/components/userup/userupdetail'
+import userupdetail2 from '@/components/userup/userupdetail2'
 import adduserup from '@/components/userup/adduserup'
 import changeuserup from '@/components/userup/changeuserup'
 import addremark from '@/components/userup/addremark'
@@ -162,6 +164,16 @@ export default new Router({
       path: '/power',
       name: '权限失败',
       component: power
+    },
+    {
+      path: '/userupdetail2',
+      name: '上报详情',
+      component: userupdetail2
+    },
+    {
+      path: '/sharedetail2',
+      name: '共享详情2',
+      component: sharedetail2
     },
   ]
 })

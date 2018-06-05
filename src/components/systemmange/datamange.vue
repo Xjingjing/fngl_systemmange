@@ -39,7 +39,7 @@
                 <li v-if="detaillist.length == 0" style="padding-top:1rem;text-align:center">-- 暂无数据 --</li>
                 <li v-for="item in detaillist" v-else>
                     <div class="list-left">
-                        <div class="clearfix"><h3 class="membername fl">{{item.username}}</h3><h3 class="membergroup fr">小组小组</h3></div>
+                        <div class="clearfix"><h3 class="membername fl">{{item.username}}</h3><h3 class="membergroup fr">{{item.groupname}}</h3></div>
                         <span>上传数 : <span class="upnum red">{{item.userallcount}}</span></span><br>
                         <span>已共享 : <span class="sharenum red">{{item.shareCount}}</span></span>
                     </div>

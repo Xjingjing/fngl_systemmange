@@ -1,30 +1,30 @@
 <template>
      <div>
             <!-- 头部 -->
-            <mt-header fixed title="上报详情">
+            <mt-header fixed title="共享详情">
                 <span slot="left" @click="$router.go(-1)">
                     <mt-button icon="back"></mt-button>
                 </span>
             </mt-header>
 
             <!-- 搜索 -->
-            <div class="mint-searchbar">
+            <!-- <div class="mint-searchbar">
                 <div class="mint-searchbar-inner">
                     <i class="mintui mintui-search"></i> 
                     <input type="search" placeholder="请输入您想要搜索的姓名或手机号" class="mint-searchbar-core" v-model="searchvalue">
                 </div> 
                 <a class="mint-searchbar-cancel" @click="search">搜索</a>
-            </div>
+            </div> -->
 
             <!-- 上报详细信息 -->
             <div>
-                <div style="margin-top:1rem;width:100%;text-align:center" v-if="reportuserlist.length == 0">--暂无数据--</div>
-                <div v-else class="list-left" style="padding-top:0.8rem;" v-for="item in reportuserlist">
-                    <span>上报日期 : <span class="reportdate info">{{item.createtime}}</span></span><br>
-                    <span>上报所在组 : <span class="reportgroup info">{{item.groupname}}</span></span><br>
+                <div class="list-left" style="padding-top:0.8rem;" v-for="item in sharedetaillist">
+                    <span>共享人 : <span class="reportdate info">{{item.pushername}}</span></span><br>
+                    <span>共享日期 : <span class="reportdate info">{{item.createtime}}</span></span><br>
+                    <span>共享所在组 : <span class="reportgroup info">{{item.groupname}}</span></span><br>
                     <div style="height:0.5rem"></div>
-                    <div>
-                        <span class="meminfo" style="width:100%;">姓名 : <span class="reportname info">{{item.landusername}}</span></span><br>
+                    <div class="clearfix">
+                        <span class="meminfo">姓名 : <span class="reportname info">{{item.landusername}}</span></span><br>
                         <span class="meminfo">性别 : <span class="reportsex info">{{item.sexname}}</span></span>
                         <span class="meminfo">类别 : <span class="reportcate info">{{item.typename}}</span></span><br>
                         <span class="meminfo">手机 : <span class="reportphone info">{{item.landuserphone}}</span></span><br>
@@ -45,31 +45,36 @@
     import { MessageBox } from 'mint-ui';
     import { Toast } from 'mint-ui';
     export default {
-        name: 'reportdetail',
+        name: 'sharedetail',
         data(){
             return {
-                searchvalue:'',
+                searchvalue:this.$route.query.searchvalue,
                 isshow:true,
-                searchendtime:this.$route.query.searchendtime,
-                searchdate:this.$route.query.searchdate,
-                isselfday:this.$route.query.isselfday,
-                pusherid:this.$route.query.pusherid,
-                reportuserlist:[]
+                groupobj:this.$route.query,  // 获取路由传值
+                sharedetaillist:[]
             }
         },
         created(){
-            var that = this;
-
-            var power = window.localStorage.getItem('syspower');
+            var power = window.localStorage.getItem('userpower');
             // 判断有没有权限访问
-            if(power == 'false' || power == null){
+            if(power == null){
+                this.$router.push({
+                    path:'/power'
+                })
+                return
+            }else if(power == '2'){
+                this.$router.push({
+                    path:'/bindphone'
+                })
+                return
+            }else if(power == '3'){
                 this.$router.push({
                     path:'/power'
                 })
                 return
             }
-            this.getalldetail();
 
+            this.getalldetail();
         },
         methods:{
             getalldetail(){
@@ -78,37 +83,27 @@
                     spinnerType: 'fading-circle'
                 });
                 var that = this;
-                var data;
-                if(that.isselfday == false){
-                    data = {
-                        actionType:1,
-                        days:that.searchdate,
-                        pusherId:that.pusherid,
-                    }
-                }else{
-                    data = {
-                        actionType:1,
-                        days:that.searchdate,
-                        endTime:that.searchendtime, 
-                        pusherId:that.pusherid,                       
-                    }
-                }
-                this.$axios({
+                that.$axios({
                     method:'post',
-                    url:'/index.php?g=landpush&m=landpush&a=reportDetails',
-                    data:data,
+                    url:'/index.php?g=landpush&m=landpush&a=shareDetails',
+                    data:{
+                        actionType:1,
+                        search:that.searchvalue,
+                        pusherId:Number(window.localStorage.getItem('pusherId')),
+                    },
                     headers:{
                         'Content-Type':'application/x-www-form-urlencoded'
                     }
                 }).then(function(res){
                     that.$indicator.close();
-                    that.reportuserlist = res.data.data;          
-                    console.log(that.reportuserlist);
+                    console.log(res)
+                    that.sharedetaillist = res.data.data;
+                
                 })
             },
             search(){
                 if(this.searchvalue == ''){
-                    Toast('请输入搜索条件');
+                    Toast('请输入姓名或手机号进行搜索');
                     return
                 }
                 this.$indicator.open({
@@ -116,34 +111,25 @@
                     spinnerType: 'fading-circle'
                 });
                 var that = this;
-                var data;
-                if(that.isselfday == false){
-                    data = {
-                        actionType:2,
-                        days:that.searchdate,
-                        pusherId:that.pusherid,
-                        searchName:that.searchvalue
-                    }
-                }else{
-                    data = {
-                        actionType:2,
-                        days:that.searchdate,
-                        endTime:that.searchendtime, 
-                        pusherId:that.pusherid, 
-                        searchName:that.searchvalue                      
-                    }
-                }
-                this.$axios({
+                that.$axios({
                     method:'post',
-                    url:'/index.php?g=landpush&m=landpush&a=reportDetails',
-                    data:data,
+                    url:'/index.php?g=landpush&m=landpush&a=shareDetails',
+                    data:{
+                        actionType:2,
+                        currentSec:that.groupobj.day,
+                        search:that.searchvalue,
+                        pusherId:Number(window.localStorage.getItem('pusherId')),
+                    },
                     headers:{
                         'Content-Type':'application/x-www-form-urlencoded'
                     }
                 }).then(function(res){
                     that.$indicator.close();
-                    // console.log(res);
-                    that.reportuserlist = res.data.data;             
+                    console.log(res)
+                    if(res.data.data.length == 0){
+                        Toast('没有查询到匹配数据');
+                    }
+                    that.sharedetaillist = res.data.data;
                 })
             },
             manageresult(e){
@@ -167,10 +153,7 @@
                 })
             },
             reamrkinfo(e){
-                if(e==null){
-                    Toast('该项没有备注信息');
-                    return
-                }
+                console.log(e)
                 this.$router.push({
                     path:'/remarkinfo',
                     query:e

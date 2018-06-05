@@ -1,5 +1,5 @@
 <template>
-     <div>
+     <div style="padding-bottom:14%;">
             <!-- 头部 -->
             <mt-header fixed title="用户上报">
                 <!-- <span slot="left" @click="$router.go(-1)">
@@ -159,8 +159,10 @@
                         Toast('没有查询到匹配数据');
                         that.reportlist = [];
                     }else{
-                        that.count = res.data.data.count;
-                        that.reportlist = res.data.data.daysList;
+                        that.$router.push({
+                            path:'/userupdetail2',
+                            query:{searchvalue:that.searchvalue}
+                        })
                     }
                 })
             },
