@@ -136,6 +136,25 @@
             <li class="fl"><mt-button type="default" @click="$router.go(-1)">取消</mt-button></li>
             <li class="fl"><mt-button type="primary" @click="adduserup">提交</mt-button></li>
         </ul>
+        <div style="margin-top:0.8rem;border-top:1px solid #eee;">
+            <div style="width:100%;display:flex;justify-content:center;">
+                <label for="image" class="picbutton">上传图片</label>
+                <input type="file" id='image' accept="image/*" style="display:none;" @change="selectimg">
+                <span class="picbutton" @click="testpic">开始识别</span>
+            </div>
+            <div style="width:100%;">
+                <img :src="src1" style="width:100%;" alt="">
+                <img :src="src" style="display:none;" alt="" id="imagetest">
+            </div>
+        </div>
+        <ul class="testresult" v-if="resultshow">
+            <li class="clearfix"><span>编号</span><span>识别结果</span><span>操作</span></li>
+            <li class="clearfix" v-for="(item,index) in resultlist" :key="index">
+                <span>{{index+1}}</span>
+                <span :id="'id_text'+index">{{item.words}}</span>
+                <span><button class="areabutton id_copy" :data-clipboard-target="'#id_text'+index" data-clipboard-action="copy">复制</button></span>
+            </li>
+        </ul>
     </div>
 </template>
 
@@ -147,11 +166,14 @@
     import AMap from 'vue-amap'; 
     import VueJsonp from 'vue-jsonp';
     import { Toast } from 'mint-ui';
+    import Clipboard from 'clipboard'; 
+
     export default {
         name:'adduserup',
         data(){
             var self = this;
             return{
+                resultshow:false,
                 username:'',
                 phone:'',
                 sex : [
@@ -180,6 +202,10 @@
                 
                 lng: 0,
                 lat: 0,
+                src:'',
+                src1:'',
+                image:'',
+                resultlist:[]
             }
         },
         created(){
@@ -265,7 +291,123 @@
 
             })
         },
+        mounted(){
+            var clipboard = new Clipboard(".id_copy");      
+            clipboard.on('success', function(e) {
+                // console.log(e)
+                Toast('已成功复制到剪贴板');
+                e.clearSelection();
+            }); 
+            var file = document.getElementById('image');
+            if (getIos()) {
+                file.removeAttribute("capture");
+            }
+            function getIos() {
+                var ua=navigator.userAgent.toLowerCase();
+                if (ua.match(/iPhone\sOS/i) == "iphone os") {
+                    return true;
+                } else {
+                    return false;
+                }
+            }     
+        },
         methods:{
+            selectimg(){
+                var that = this;
+				var f = document.getElementById('image').files[0]; //获取file组件中的文件
+                console.log(f)
+                // alert(f.type)
+                var formatlist = ['image/jpeg','image/jpg','image/png','image/bmp'];
+                var isLt4M = f.size/1024/1024 <= 4;
+                var format;
+                if(!isLt4M){
+                    Toast('图片不能大于4M');
+                    return
+                }
+                for(var i = 0; i < formatlist.length;i++){
+                    if(formatlist[i] == f.type){
+                        format = true;
+                        break
+                    }
+                }
+                if(!format){
+                    Toast('图片格式只支持jpeg,jpg,png,bmp');
+                    return
+                }
+                var rd = new FileReader(); //创建文件读取对象  
+                rd.readAsDataURL(f); //文件读取装换为base64类型  
+                rd.onloadend = function(e) {       
+                    that.src1 = this.result;
+                    // that.image = this.result.split(',')[1];
+                    var img = new Image();
+                    img.src = this.result;
+                    img.onload = function(){
+                        var cvs = document.createElement('canvas');
+                        cvs.width = this.width*0.55;
+                        cvs.height = this.height*0.55;
+                        var ctx = cvs.getContext("2d");
+                        ctx.drawImage( this, 0, 0, cvs.width, cvs.height);
+                        var newImageData = cvs.toDataURL('image/jpeg',0.8);
+                        that.image = newImageData.split(',')[1];
+                        // console.log(this.image)
+                        that.src = newImageData;
+                        console.log(newImageData)
+                        // console.log($('#imagetest')[0])
+                        // console.log(width)
+                    }
+                }
+            },
+            testpic(){
+                var that = this;
+                if(this.img == ''){
+                    Toast('请上传图片');
+                    return
+                }
+                var width = $('#imagetest')[0].width;
+                var height = $('#imagetest')[0].height;
+                console.log(width)
+                // var cvs = document.createElement('canvas');
+                // cvs.width = width*0.4;
+                // cvs.height = height*0.4;
+                // var ctx = cvs.getContext("2d");
+                // ctx.drawImage( $('#imagetest')[0], 0, 0, cvs.width, cvs.height);
+                // var newImageData = cvs.toDataURL();
+                // this.image = newImageData.split(',')[1];
+                // // console.log(this.image)
+                // this.src = newImageData;
+                // console.log($('#imagetest')[0].width)
+                // console.log($('#imagetest')[0])
+                // console.log(width)
+                if(width<15||height<15){
+                    Toast('图片最短边不能小于15px');
+                    return
+                }
+                if(width>4096||height>4096){
+                    Toast('图片最长边不能大于4096px');
+                    return
+                }
+                
+                this.$indicator.open({
+                    text: '识别中...',
+                    spinnerType: 'fading-circle'
+                });
+                this.$axios({
+                    method:'post',
+                    url:'/index.php?g=landpush&m=landpush&a=recognitionImage',
+                    data:{
+                        baseImage:that.image
+                    },
+                    headers:{
+                        'Content-Type':'application/x-www-form-urlencoded'
+                    }
+                }).then(function(res){
+                    that.$indicator.close();
+                    Toast('识别完毕');
+                    that.resultlist = res.data.data.res.words_result;
+                    that.resultshow = true;
+                    // console.log(that.resultlist)
+                })
+            },
             getareadetail(){
                 var that = this; 
                 var geolocation = new BMap.Geolocation(); 
@@ -390,4 +532,36 @@
     .managecatelist .mint-msgbox-content{
         padding-left:2.7rem;
     }
+    .picbutton{
+        background-color: #26a2ff;
+        padding:0.6rem 0.8rem;
+        border-radius: 0.5rem;
+        color:#fff;
+        margin:0.5rem auto;
+    }
+    .testresult{
+        padding:0.8rem 0;
+    }
+    .testresult li{
+        padding:0.3rem 0;
+        display:flex;
+        align-items: center;
+        border-bottom:1px solid #eee;
+    }
+    .testresult span{
+        float:left;
+        box-sizing: border-box;
+        text-align: center;
+        font-size:1rem;
+    }
+    .testresult span:first-child{
+        width: 20%;
+    }
+    .testresult span:nth-child(2){
+        width: 60%;
+    }
+    .testresult span:last-child{
+        width: 20%;
+    }
+
 </style>
